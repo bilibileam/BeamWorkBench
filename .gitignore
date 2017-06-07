@@ -1,0 +1,11 @@
+/ArchTecManager/*.classpath
+/ArchTecManager/*.project
+/ArchTecManager/.settings/*.prefs
+/ArchTecManager/target
+/ArchTecManager/test-output/Default suite
+/ArchTecManager/test-output
+*.project
+*.classpath
+*.prefs
+target
+test-output

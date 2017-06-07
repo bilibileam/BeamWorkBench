@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+	default-autowire="byName">
+
+	<bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:ORCL" />
+		<property name="username" value="bres" />
+		<property name="password" value="bres" />
+		<property name="maxActive" value="100" />
+		<property name="maxIdle" value="2" />
+		<property name="minIdle" value="1" />
+		<property name="initialSize" value="1" />
+		<property name="maxWait" value="100" />
+	</bean>
+<!-- 	<bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" -->
+<!-- 		destroy-method="close"> -->
+<!-- 		<property name="driverClassName" value="com.ibm.db2.jcc.DB2Driver" /> -->
+<!-- 		<property name="url" value="jdbc:db2://10.19.220.240:60004/csidevdb" /> -->
+<!-- 		<property name="username" value="csi" /> -->
+<!-- 		<property name="password" value="ds3Q4ed0" /> -->
+<!-- 		<property name="maxActive" value="100" /> -->
+<!-- 		<property name="maxIdle" value="2" /> -->
+<!-- 		<property name="minIdle" value="1" /> -->
+<!-- 		<property name="initialSize" value="1" /> -->
+<!-- 		<property name="maxWait" value="100" /> -->
+<!-- 	</bean> -->
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<!-- static binding datasource as jndi.datasource variable defined in jdbc.properties. 
+			refacted By NelsonQ -->
+		<property name="dataSource">
+			<ref bean="basicDataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.DB2Dialect
+				</prop>
+				<prop key="hibernate.jdbc.fetch_size">100</prop>
+				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<!-- <prop key="hibernate.cache.provider_class"> com.googlecode.hibernate.memcached.MemcachedCacheProvider 
+					</prop> <prop key="hibernate.cache.provider_class"> net.sf.ehcache.hibernate.EhCacheProvider 
+					</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="hibernate.cache.use_query_cache">true</prop> <prop key="hibernate.memcached.servers"> 
+					localhost:11211 </prop> -->
+			</props>
+		</property>
+		<property name="packagesToScan">
+			<list merge="true">
+				<value>com.suning.csi.dmo</value>
+			</list>
+		</property>
+	</bean>
+	<!-- <bean id="basicDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
+		<property name="jndiName" value="${jdbc.jndiName}" /> </bean> <bean id="informixDataSource" 
+		class="org.springframework.jndi.JndiObjectFactoryBean"> <property name="jndiName" 
+		value="${jdbc.informixJndiName}" /> </bean> -->
+
+	<!--<bean id="informixDataSource" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="${jdbc.infomix.driverClassName}" 
+		/> <property name="url" value="${jdbc.infomix.url}" /> </bean> -->
+
+	<!-- hibernate's Transaction Manager -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+
+	<!-- aop <aop:aspectj-autoproxy /> -->
+	<!--<aop:config> <aop:advisor pointcut="execution(public * *..*bsh..*(..)) 
+		and not within(*..bsh.financial.impl.AgreementServiceImpl.ruleAgreement) 
+		and not within(com.castalia.ipe.bsh.financial.impl.SpecificationServiceImpl)" 
+		advice-ref="txAdvice" /> <aop:advisor pointcut="execution(public * com.cpic.p09.auto.business.interfaces.saliplatform.bsh..*(..))" 
+		advice-ref="txAdviceSali"/> </aop:config> -->
+	<!-- <tx:advice id="txAdvice" transaction-manager="transactionManager"> -->
+	<!-- <tx:attributes> -->
+	<!-- <tx:method name="get*" read-only="true" /> -->
+	<!-- <tx:method name="find*" read-only="true" /> -->
+	<!-- <tx:method name="*" no-rollback-for="com.castalia.ipe.blh.exception.MaxConnectionNumberException,MinConnectionNumberException"/> -->
+	<!-- </tx:attributes> -->
+	<!-- </tx:advice> -->
+
+</beans>
+
